@@ -17,7 +17,7 @@ func TestString(t *testing.T) {
 }
 
 func TestBool(t *testing.T) {
-	tc := []struct {
+	cases := []struct {
 		name     string
 		input    string
 		expected bool
@@ -50,7 +50,9 @@ func TestBool(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tc {
+	for _, tc := range cases {
+		tc := tc
+
 		t.Run(tc.name, func(t *testing.T) {
 			reset := setTestInput("testbool", tc.input)
 			defer reset()
@@ -61,7 +63,7 @@ func TestBool(t *testing.T) {
 }
 
 func TestInt(t *testing.T) {
-	tc := []struct {
+	cases := []struct {
 		name     string
 		input    string
 		expected int
@@ -89,7 +91,7 @@ func TestInt(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tc {
+	for _, tc := range cases {
 		tc := tc
 
 		t.Run(tc.name, func(t *testing.T) {
@@ -109,7 +111,7 @@ func TestInt(t *testing.T) {
 }
 
 func TestInt64(t *testing.T) {
-	tc := []struct {
+	cases := []struct {
 		name     string
 		input    string
 		expected int64
@@ -137,7 +139,7 @@ func TestInt64(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tc {
+	for _, tc := range cases {
 		tc := tc
 
 		t.Run(tc.name, func(t *testing.T) {
@@ -145,6 +147,54 @@ func TestInt64(t *testing.T) {
 			defer reset()
 
 			actual, err := Int64("testint")
+
+			if tc.err != "" {
+				assert.EqualError(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, tc.expected, actual)
+			}
+		})
+	}
+}
+
+func TestFloat64(t *testing.T) {
+	cases := []struct {
+		name     string
+		input    string
+		expected float64
+		err      string
+	}{
+		{
+			name:  "unset",
+			input: "",
+			err:   `failed to decode input "testfloat" as float64: strconv.ParseFloat: parsing "": invalid syntax`,
+		},
+		{
+			name:     "int",
+			input:    "123",
+			expected: 123,
+		},
+		{
+			name:     "float",
+			input:    "12.5",
+			expected: 12.5,
+		},
+		{
+			name:  "alpha",
+			input: "abc",
+			err:   `failed to decode input "testfloat" as float64: strconv.ParseFloat: parsing "abc": invalid syntax`,
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			reset := setTestInput("testfloat", tc.input)
+			defer reset()
+
+			actual, err := Float64("testfloat")
 
 			if tc.err != "" {
 				assert.EqualError(t, err, tc.err)

@@ -39,3 +39,14 @@ func Int64(name string) (int64, error) {
 
 	return i, nil
 }
+
+// Float64 returns the input value as a float64
+func Float64(name string) (float64, error) {
+	f, err := strconv.ParseFloat(String(name), 64)
+
+	if err != nil {
+		return 0, fmt.Errorf("failed to decode input %q as float64: %w", name, err)
+	}
+
+	return f, nil
+}
