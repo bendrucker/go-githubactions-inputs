@@ -9,7 +9,12 @@ import (
 // StringSlice returns the input value as a slice of strings, splitting on commas.
 // Each entry is stripped of leading and trailing whitespace.
 func StringSlice(name string) []string {
-	s := strings.Split(String(name), ",")
+	v := String(name)
+	if v == "" {
+		return []string{}
+	}
+
+	s := strings.Split(v, ",")
 
 	for i, str := range s {
 		s[i] = strings.TrimSpace(str)

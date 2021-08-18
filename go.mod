@@ -4,5 +4,5 @@ go 1.16
 
 require (
 	github.com/sethvargo/go-githubactions v0.4.0
-	github.com/stretchr/testify v1.7.0 // indirect
+	github.com/stretchr/testify v1.7.0
 )
