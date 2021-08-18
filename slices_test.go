@@ -28,6 +28,11 @@ func TestStringSlice(t *testing.T) {
 			input:    "one,two",
 			expected: []string{"one", "two"},
 		},
+		{
+			name:     "padded",
+			input:    "one, two",
+			expected: []string{"one", "two"},
+		},
 	}
 
 	for _, tc := range cases {
@@ -127,6 +132,54 @@ func TestInt64Slice(t *testing.T) {
 			defer reset()
 
 			i, err := Int64Slice("testint64slice")
+
+			if tc.err != "" {
+				assert.EqualError(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, tc.expected, i)
+			}
+		})
+	}
+}
+
+func TestFloat64Slice(t *testing.T) {
+	cases := []struct {
+		name     string
+		input    string
+		expected []float64
+		err      string
+	}{
+		{
+			name:     "empty",
+			input:    "",
+			expected: []float64{},
+		},
+		{
+			name:     "one",
+			input:    "1",
+			expected: []float64{1},
+		},
+		{
+			name:     "two",
+			input:    "1, 2.5",
+			expected: []float64{1, 2.5},
+		},
+		{
+			name:  "invalid",
+			input: "1,a",
+			err:   `failed to decode entry 1 in input "testfloat64slice" as float64: strconv.ParseFloat: parsing "a": invalid syntax`,
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			reset := setTestInput("testfloat64slice", tc.input)
+			defer reset()
+
+			i, err := Float64Slice("testfloat64slice")
 
 			if tc.err != "" {
 				assert.EqualError(t, err, tc.err)

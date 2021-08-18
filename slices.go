@@ -60,3 +60,22 @@ func Int64Slice(name string) ([]int64, error) {
 
 	return ints, nil
 }
+
+// Float64Slice returns the input value as a slice of float64s, splitting on commas.
+// If any entry is not a float, an error is returned.
+func Float64Slice(name string) ([]float64, error) {
+	s := StringSlice(name)
+	floats := make([]float64, len(s))
+
+	for i, str := range s {
+		v, err := strconv.ParseFloat(str, 64)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to decode entry %d in input %q as float64: %w", i, name, err)
+		}
+
+		floats[i] = v
+	}
+
+	return floats, nil
+}
