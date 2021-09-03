@@ -20,7 +20,7 @@ func Decode(v interface{}) error {
 		fieldVal := val.Elem().Field(i)
 		field := val.Elem().Type().Field(i)
 
-		switch fieldVal.Kind() {
+		switch kind := fieldVal.Kind(); kind {
 		case reflect.String:
 			fieldVal.SetString(String(field.Name))
 		case reflect.Int, reflect.Int64:
@@ -40,7 +40,7 @@ func Decode(v interface{}) error {
 		case reflect.Bool:
 			fieldVal.SetBool(Bool(field.Name))
 		case reflect.Slice:
-			switch fieldVal.Type().Elem().Kind() {
+			switch elementKind := fieldVal.Type().Elem().Kind(); elementKind {
 			case reflect.String:
 				fieldVal.Set(reflect.ValueOf(StringSlice(field.Name)))
 			case reflect.Int:
@@ -65,10 +65,10 @@ func Decode(v interface{}) error {
 
 				fieldVal.Set(reflect.ValueOf(floatSlice))
 			default:
-				panic("invalid input: unknown slice elem type")
+				panic("invalid input: unknown slice elem type: " + elementKind.String())
 			}
 		default:
-			panic("invalid input: unknown type")
+			panic("invalid input: unknown type: " + kind.String())
 		}
 	}
 
