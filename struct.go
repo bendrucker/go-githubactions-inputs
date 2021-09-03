@@ -6,19 +6,23 @@ import (
 
 // Decode  reads the inputs and stores them in the struct pointed to by v
 func Decode(v interface{}) error {
-	val := reflect.ValueOf(v)
-
-	if val.IsNil() {
-		panic("invalid input: nil")
+	if v == nil {
+		panic("Decode: v is nil")
 	}
 
+	val := reflect.ValueOf(v)
+
 	if val.Kind() != reflect.Ptr {
-		panic("invalid input: non-pointer")
+		panic("Decode: v is not a pointer")
 	}
 
 	for i := 0; i < val.Elem().NumField(); i++ {
 		fieldVal := val.Elem().Field(i)
 		field := val.Elem().Type().Field(i)
+
+		if fieldVal.Kind() == reflect.Ptr {
+			panic("Decode: pointer fields are not supported (" + field.Name + ")")
+		}
 
 		switch kind := fieldVal.Kind(); kind {
 		case reflect.String:

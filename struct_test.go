@@ -12,7 +12,23 @@ func TestDecode(t *testing.T) {
 		inputs map[string]string
 		value  interface{}
 		check  func(interface{})
+		panics string
 	}{
+		{
+			name:   "panic: nil",
+			value:  nil,
+			panics: "Decode: v is nil",
+		},
+		{
+			name:   "panic: non-pointer",
+			value:  struct{}{},
+			panics: "Decode: v is not a pointer",
+		},
+		{
+			name:   "panic: pointer field",
+			value:  &struct{ Foo *string }{},
+			panics: "Decode: pointer fields are not supported (Foo)",
+		},
 		{
 			name:   "string",
 			inputs: map[string]string{"foo": "bar"},
@@ -94,12 +110,19 @@ func TestDecode(t *testing.T) {
 				t.Cleanup(func() { reset() })
 			}
 
-			err := Decode(tc.value)
-			if err != nil {
-				t.Fatal(err)
+			decode := func() {
+				err := Decode(tc.value)
+				if err != nil {
+					t.Fatal(err)
+				}
 			}
 
-			tc.check(tc.value)
+			if tc.panics != "" {
+				assert.PanicsWithValue(t, tc.panics, decode)
+			} else {
+				decode()
+				tc.check(tc.value)
+			}
 		})
 	}
 }
