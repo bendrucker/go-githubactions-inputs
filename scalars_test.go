@@ -16,6 +16,15 @@ func TestString(t *testing.T) {
 	assert.Equal(t, "hello world", String("teststring"))
 }
 
+func TestStringPtr(t *testing.T) {
+	assert.Nil(t, StringPtr("unset"))
+
+	reset := setTestInput("teststring", "hello world")
+	defer reset()
+
+	assert.Equal(t, "hello world", *StringPtr("teststring"))
+}
+
 func TestBool(t *testing.T) {
 	cases := []struct {
 		name     string
@@ -62,6 +71,15 @@ func TestBool(t *testing.T) {
 	}
 }
 
+func TestBoolPtr(t *testing.T) {
+	assert.Nil(t, BoolPtr("unset"))
+
+	reset := setTestInput("testbool", "true")
+	defer reset()
+
+	assert.True(t, *BoolPtr("testbool"))
+}
+
 func TestInt(t *testing.T) {
 	cases := []struct {
 		name     string
@@ -105,6 +123,61 @@ func TestInt(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				assert.Equal(t, tc.expected, actual)
+			}
+		})
+	}
+}
+
+func TestIntPtr(t *testing.T) {
+	cases := []struct {
+		name     string
+		input    string
+		nilPtr   bool
+		expected int
+		err      string
+	}{
+		{
+			name:   "unset",
+			input:  "",
+			nilPtr: true,
+		},
+		{
+			name:     "valid",
+			input:    "123",
+			expected: 123,
+		},
+		{
+			name:  "float",
+			input: "12.5",
+			err:   `failed to decode input "testint" as int: strconv.Atoi: parsing "12.5": invalid syntax`,
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			d := &decoder{
+				lookupenv: func(_ string) (string, bool) {
+					return tc.input, tc.input != ""
+				},
+				getenv: func(_ string) string {
+					return tc.input
+				},
+			}
+
+			actual, err := d.IntPtr("testint")
+
+			if tc.err != "" {
+				assert.EqualError(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+
+				if tc.nilPtr {
+					assert.Nil(t, actual)
+				} else {
+					assert.Equal(t, tc.expected, *actual)
+				}
 			}
 		})
 	}
