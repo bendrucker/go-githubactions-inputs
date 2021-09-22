@@ -24,63 +24,13 @@ func Decode(v interface{}) error {
 			panic("Decode: pointer fields are not supported (" + field.Name + ")")
 		}
 
-		switch kind := fieldVal.Kind(); kind {
-		case reflect.String:
-			fieldVal.SetString(String(field.Name))
-		case reflect.Int, reflect.Int64:
-			intV, err := Int64(field.Name)
-			if err != nil {
-				return &DecodeError{}
-			}
-
-			fieldVal.SetInt(intV)
-		case reflect.Float64:
-			floatV, err := Float64(field.Name)
-			if err != nil {
-				return &DecodeError{}
-			}
-
-			fieldVal.SetFloat(floatV)
-		case reflect.Bool:
-			fieldVal.SetBool(Bool(field.Name))
-		case reflect.Slice:
-			switch elementKind := fieldVal.Type().Elem().Kind(); elementKind {
-			case reflect.String:
-				fieldVal.Set(reflect.ValueOf(StringSlice(field.Name)))
-			case reflect.Int:
-				intSlice, err := IntSlice(field.Name)
-				if err != nil {
-					return &DecodeError{}
-				}
-
-				fieldVal.Set(reflect.ValueOf(intSlice))
-			case reflect.Int64:
-				intSlice, err := Int64Slice(field.Name)
-				if err != nil {
-					return &DecodeError{}
-				}
-
-				fieldVal.Set(reflect.ValueOf(intSlice))
-			case reflect.Float64:
-				floatSlice, err := Float64Slice(field.Name)
-				if err != nil {
-					return &DecodeError{}
-				}
-
-				fieldVal.Set(reflect.ValueOf(floatSlice))
-			default:
-				panic("invalid input: unknown slice elem type: " + elementKind.String())
-			}
-		default:
-			panic("invalid input: unknown type: " + kind.String())
+		val, err := reflectValue(field.Name, fieldVal.Type())
+		if err != nil {
+			return err
 		}
+
+		fieldVal.Set(val)
 	}
 
 	return nil
-}
-
-type DecodeError struct{}
-
-func (e DecodeError) Error() string {
-	return "decode error"
 }
