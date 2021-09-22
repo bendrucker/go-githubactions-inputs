@@ -52,7 +52,32 @@ func Test_reflectValue(t *testing.T) {
 			input:     "foo",
 			wantError: "failed to decode",
 		},
+		{
+			name:     "string slice",
+			wantType: reflect.TypeOf([]string{}),
+			input:    "foo,bar",
+			want:     reflect.ValueOf([]string{"foo", "bar"}),
+		},
+		{
+			name:     "int slice",
+			wantType: reflect.TypeOf([]int{}),
+			input:    "1,2",
+			want:     reflect.ValueOf([]int{1, 2}),
+		},
+		{
+			name:     "int64 slice",
+			wantType: reflect.TypeOf([]int64{}),
+			input:    "1,2",
+			want:     reflect.ValueOf([]int64{1, 2}),
+		},
+		{
+			name:     "float slice",
+			wantType: reflect.TypeOf([]float64{}),
+			input:    "1.1,2.2",
+			want:     reflect.ValueOf([]float64{1.1, 2.2}),
+		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
