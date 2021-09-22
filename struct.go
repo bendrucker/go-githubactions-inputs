@@ -20,10 +20,6 @@ func Decode(v interface{}) error {
 		fieldVal := val.Elem().Field(i)
 		field := val.Elem().Type().Field(i)
 
-		if fieldVal.Kind() == reflect.Ptr {
-			panic("Decode: pointer fields are not supported (" + field.Name + ")")
-		}
-
 		val, err := reflectValue(field.Name, fieldVal.Type())
 		if err != nil {
 			return err

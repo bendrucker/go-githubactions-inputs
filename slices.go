@@ -8,7 +8,7 @@ import (
 
 // StringSlice returns the input value as a slice of strings, splitting on commas.
 // Each entry is stripped of leading and trailing whitespace.
-func StringSlice(name string) []string {
+func (d *decoder) StringSlice(name string) []string {
 	v := String(name)
 	if v == "" {
 		return []string{}
@@ -23,10 +23,16 @@ func StringSlice(name string) []string {
 	return s
 }
 
+// StringSlice returns the input value as a slice of strings, splitting on commas.
+// Each entry is stripped of leading and trailing whitespace.
+func StringSlice(name string) []string {
+	return defaultDecoder.StringSlice(name)
+}
+
 // IntSlice returns the input value as a slice of ints, splitting on commas.
 // If any entry is not an integer, an error is returned.
-func IntSlice(name string) ([]int, error) {
-	s := StringSlice(name)
+func (d *decoder) IntSlice(name string) ([]int, error) {
+	s := d.StringSlice(name)
 	ints := make([]int, len(s))
 
 	for i, str := range s {
@@ -42,10 +48,16 @@ func IntSlice(name string) ([]int, error) {
 	return ints, nil
 }
 
+// IntSlice returns the input value as a slice of strings, splitting on commas.
+// Each entry is stripped of leading and trailing whitespace.
+func IntSlice(name string) ([]int, error) {
+	return defaultDecoder.IntSlice(name)
+}
+
 // Int64Slice returns the input value as a slice of int64s, splitting on commas.
 // If any entry is not an integer, an error is returned.
-func Int64Slice(name string) ([]int64, error) {
-	s := StringSlice(name)
+func (d *decoder) Int64Slice(name string) ([]int64, error) {
+	s := d.StringSlice(name)
 	ints := make([]int64, len(s))
 
 	for i, str := range s {
@@ -61,10 +73,16 @@ func Int64Slice(name string) ([]int64, error) {
 	return ints, nil
 }
 
+// Int64Slice returns the input value as a slice of strings, splitting on commas.
+// Each entry is stripped of leading and trailing whitespace.
+func Int64Slice(name string) ([]int64, error) {
+	return defaultDecoder.Int64Slice(name)
+}
+
 // Float64Slice returns the input value as a slice of float64s, splitting on commas.
 // If any entry is not a float, an error is returned.
-func Float64Slice(name string) ([]float64, error) {
-	s := StringSlice(name)
+func (d *decoder) Float64Slice(name string) ([]float64, error) {
+	s := d.StringSlice(name)
 	floats := make([]float64, len(s))
 
 	for i, str := range s {
@@ -78,4 +96,10 @@ func Float64Slice(name string) ([]float64, error) {
 	}
 
 	return floats, nil
+}
+
+// Float64Slice returns the input value as a slice of strings, splitting on commas.
+// Each entry is stripped of leading and trailing whitespace.
+func Float64Slice(name string) ([]float64, error) {
+	return defaultDecoder.Float64Slice(name)
 }

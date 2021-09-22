@@ -25,11 +25,6 @@ func TestDecode(t *testing.T) {
 			panics: "Decode: v is not a pointer",
 		},
 		{
-			name:   "panic: pointer field",
-			value:  &struct{ Foo *string }{},
-			panics: "Decode: pointer fields are not supported (Foo)",
-		},
-		{
 			name:   "string",
 			inputs: map[string]string{"foo": "bar"},
 			value:  &struct{ Foo string }{},
@@ -101,6 +96,13 @@ func TestDecode(t *testing.T) {
 				assert.Equal(t, []float64{1.1, 2.2}, v.(*struct{ Foo []float64 }).Foo)
 			},
 		},
+		// {
+		// 	name:  "string pointer",
+		// 	value: &struct{ Foo *string }{},
+		// 	check: func(v interface{}) {
+		// 		assert.Equal(t, "bar", *v.(*struct{ Foo *string }).Foo)
+		// 	},
+		// },
 	}
 
 	for _, tc := range cases {
