@@ -20,7 +20,7 @@ func Decode(v interface{}) error {
 		fieldVal := val.Elem().Field(i)
 		field := val.Elem().Type().Field(i)
 
-		val, err := reflectValue(field.Name, fieldVal.Type())
+		val, err := defaultDecoder.reflectValue(field.Name, fieldVal.Type())
 		if err != nil {
 			return err
 		}

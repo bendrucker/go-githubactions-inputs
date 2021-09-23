@@ -19,3 +19,12 @@ func setTestInput(name, value string) func() {
 		os.Setenv(key, prev)
 	}
 }
+
+func newTestDecoder(inputs map[string]string) *decoder {
+	return &decoder{
+		lookup: func(name string) (string, bool) {
+			v, ok := inputs[name]
+			return v, ok
+		},
+	}
+}

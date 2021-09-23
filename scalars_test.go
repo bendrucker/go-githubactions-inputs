@@ -158,11 +158,8 @@ func TestIntPtr(t *testing.T) {
 
 		t.Run(tc.name, func(t *testing.T) {
 			d := &decoder{
-				lookupenv: func(_ string) (string, bool) {
+				lookup: func(_ string) (string, bool) {
 					return tc.input, tc.input != ""
-				},
-				getenv: func(_ string) string {
-					return tc.input
 				},
 			}
 

@@ -81,10 +81,9 @@ func Test_reflectValue(t *testing.T) {
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			reset := setTestInput("reflected", tc.input)
-			defer reset()
+			decoder := newTestDecoder(map[string]string{"reflected": tc.input})
 
-			got, err := reflectValue("reflected", tc.wantType)
+			got, err := decoder.reflectValue("reflected", tc.wantType)
 			if tc.wantError == "" {
 				require.NoError(t, err)
 			} else {

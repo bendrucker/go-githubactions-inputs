@@ -9,7 +9,7 @@ import (
 // StringSlice returns the input value as a slice of strings, splitting on commas.
 // Each entry is stripped of leading and trailing whitespace.
 func (d *decoder) StringSlice(name string) []string {
-	v := String(name)
+	v := d.String(name)
 	if v == "" {
 		return []string{}
 	}

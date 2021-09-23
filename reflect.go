@@ -2,63 +2,63 @@ package inputs
 
 import "reflect"
 
-func reflectValue(name string, wantType reflect.Type) (reflect.Value, error) {
+func (d *decoder) reflectValue(name string, wantType reflect.Type) (reflect.Value, error) {
 	switch wantType.Kind() {
 	case reflect.String:
-		return reflect.ValueOf(String(name)), nil
+		return reflect.ValueOf(d.String(name)), nil
 	case reflect.Int:
-		v, err := Int(name)
+		v, err := d.Int(name)
 		return reflect.ValueOf(v), err
 	case reflect.Int64:
-		v, err := Int64(name)
+		v, err := d.Int64(name)
 		return reflect.ValueOf(v), err
 	case reflect.Float64:
-		v, err := Float64(name)
+		v, err := d.Float64(name)
 		return reflect.ValueOf(v), err
 	case reflect.Bool:
-		return reflect.ValueOf(Bool(name)), nil
+		return reflect.ValueOf(d.Bool(name)), nil
 	case reflect.Slice:
-		return reflectSlice(name, wantType.Elem())
+		return d.reflectSlice(name, wantType.Elem())
 	case reflect.Ptr:
-		return reflectPtr(name, wantType.Elem())
+		return d.reflectPtr(name, wantType.Elem())
 	default:
 		panic("unsupported type")
 	}
 }
 
-func reflectSlice(name string, elemType reflect.Type) (reflect.Value, error) {
+func (d *decoder) reflectSlice(name string, elemType reflect.Type) (reflect.Value, error) {
 	switch elemType.Kind() {
 	case reflect.String:
-		return reflect.ValueOf(StringSlice(name)), nil
+		return reflect.ValueOf(d.StringSlice(name)), nil
 	case reflect.Int:
-		v, err := IntSlice(name)
+		v, err := d.IntSlice(name)
 		return reflect.ValueOf(v), err
 	case reflect.Int64:
-		v, err := Int64Slice(name)
+		v, err := d.Int64Slice(name)
 		return reflect.ValueOf(v), err
 	case reflect.Float64:
-		v, err := Float64Slice(name)
+		v, err := d.Float64Slice(name)
 		return reflect.ValueOf(v), err
 	default:
 		panic("unsupported slice type")
 	}
 }
 
-func reflectPtr(name string, elemType reflect.Type) (reflect.Value, error) {
+func (d *decoder) reflectPtr(name string, elemType reflect.Type) (reflect.Value, error) {
 	switch elemType.Kind() {
 	case reflect.String:
-		return reflect.ValueOf(StringPtr(name)), nil
+		return reflect.ValueOf(d.StringPtr(name)), nil
 	case reflect.Int:
-		v, err := IntPtr(name)
+		v, err := d.IntPtr(name)
 		return reflect.ValueOf(v), err
 	case reflect.Int64:
-		v, err := Int64Ptr(name)
+		v, err := d.Int64Ptr(name)
 		return reflect.ValueOf(v), err
 	case reflect.Float64:
-		v, err := Float64Ptr(name)
+		v, err := d.Float64Ptr(name)
 		return reflect.ValueOf(v), err
 	case reflect.Bool:
-		return reflect.ValueOf(BoolPtr(name)), nil
+		return reflect.ValueOf(d.BoolPtr(name)), nil
 	default:
 		panic("unsupported ptr type")
 	}
