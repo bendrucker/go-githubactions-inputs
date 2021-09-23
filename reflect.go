@@ -19,6 +19,8 @@ func reflectValue(name string, wantType reflect.Type) (reflect.Value, error) {
 		return reflect.ValueOf(Bool(name)), nil
 	case reflect.Slice:
 		return reflectSlice(name, wantType.Elem())
+	case reflect.Ptr:
+		return reflectPtr(name, wantType.Elem())
 	default:
 		panic("unsupported type")
 	}
@@ -39,5 +41,25 @@ func reflectSlice(name string, elemType reflect.Type) (reflect.Value, error) {
 		return reflect.ValueOf(v), err
 	default:
 		panic("unsupported slice type")
+	}
+}
+
+func reflectPtr(name string, elemType reflect.Type) (reflect.Value, error) {
+	switch elemType.Kind() {
+	case reflect.String:
+		return reflect.ValueOf(StringPtr(name)), nil
+	case reflect.Int:
+		v, err := IntPtr(name)
+		return reflect.ValueOf(v), err
+	case reflect.Int64:
+		v, err := Int64Ptr(name)
+		return reflect.ValueOf(v), err
+	case reflect.Float64:
+		v, err := Float64Ptr(name)
+		return reflect.ValueOf(v), err
+	case reflect.Bool:
+		return reflect.ValueOf(BoolPtr(name)), nil
+	default:
+		panic("unsupported ptr type")
 	}
 }

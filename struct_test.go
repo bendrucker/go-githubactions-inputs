@@ -96,13 +96,14 @@ func TestDecode(t *testing.T) {
 				assert.Equal(t, []float64{1.1, 2.2}, v.(*struct{ Foo []float64 }).Foo)
 			},
 		},
-		// {
-		// 	name:  "string pointer",
-		// 	value: &struct{ Foo *string }{},
-		// 	check: func(v interface{}) {
-		// 		assert.Equal(t, "bar", *v.(*struct{ Foo *string }).Foo)
-		// 	},
-		// },
+		{
+			name:   "string pointer",
+			value:  &struct{ Foo *string }{},
+			inputs: map[string]string{"foo": "bar"},
+			check: func(v interface{}) {
+				assert.Equal(t, "bar", *v.(*struct{ Foo *string }).Foo)
+			},
+		},
 	}
 
 	for _, tc := range cases {
